@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageId>Guanwu.Toolkit</PackageId>
+    <Authors>wei.jiao@guanwu.com</Authors>
+    <Company>Guanwu Corporation</Company>
+    <Version>2.0.2</Version>
+  </PropertyGroup>
+
+</Project>
