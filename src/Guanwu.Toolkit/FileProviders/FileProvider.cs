@@ -44,12 +44,10 @@ namespace Guanwu.Toolkit.FileProviders
 
         public void Start()
         {
-            Task taskProducing = Task.Run(() =>
-            {
+            Task taskProducing = Task.Run(() => {
                 Parallel.ForEach(Directories, ProduceDirectory);
             });
-            Task taskConsuming = Task.Run(() =>
-            {
+            Task taskConsuming = Task.Run(() => {
                 ConsumePipelines();
             });
         }
@@ -107,8 +105,7 @@ namespace Guanwu.Toolkit.FileProviders
         {
             var snapshot = new DirectorySnapshot(directory, _searchOption);
             if (!IncludeExistingFiles) snapshot.CreateSnapshot();
-            while (!_createdQueue.IsAddingCompleted)
-            {
+            while (!_createdQueue.IsAddingCompleted) {
                 SpinWait.SpinUntil(() => false, Interval);
                 ProduceCreatedSnapshot(snapshot);
             }
@@ -116,15 +113,12 @@ namespace Guanwu.Toolkit.FileProviders
 
         private void ProduceCreatedSnapshot(DirectorySnapshot snapshot)
         {
-            try
-            {
+            try {
                 snapshot.CreateSnapshot();
                 var snapshots = snapshot.GetCreatedSnapshots(Filters);
                 var messages = snapshots.Select(x => ReadSnapshot(x)).ToArray();
                 _createdQueue.Produce(_producerTokenSource.Token, messages);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 OnException?.Invoke(this, e);
             }
         }
@@ -132,8 +126,7 @@ namespace Guanwu.Toolkit.FileProviders
         private void ProduceChangedFiles(string directory)
         {
             var snapshot = new DirectorySnapshot(directory, _searchOption);
-            while (!_changedQueue.IsAddingCompleted)
-            {
+            while (!_changedQueue.IsAddingCompleted) {
                 SpinWait.SpinUntil(() => false, Interval);
                 ProduceChangedSnapshot(snapshot);
             }
@@ -141,15 +134,12 @@ namespace Guanwu.Toolkit.FileProviders
 
         private void ProduceChangedSnapshot(DirectorySnapshot snapshot)
         {
-            try
-            {
+            try {
                 snapshot.CreateSnapshot();
                 var snapshots = snapshot.GetChangedSnapshots(Filters);
                 var messages = snapshots.Select(x => ReadSnapshot(x)).ToArray();
                 _changedQueue.Produce(_producerTokenSource.Token, messages);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 OnException?.Invoke(this, e);
             }
         }
@@ -157,8 +147,7 @@ namespace Guanwu.Toolkit.FileProviders
         private void ProduceDeletedFiles(string directory)
         {
             var snapshot = new DirectorySnapshot(directory, _searchOption);
-            while (!_deletedQueue.IsAddingCompleted)
-            {
+            while (!_deletedQueue.IsAddingCompleted) {
                 SpinWait.SpinUntil(() => false, Interval);
                 ProduceDeletedSnapshot(snapshot);
             }
@@ -166,45 +155,37 @@ namespace Guanwu.Toolkit.FileProviders
 
         private void ProduceDeletedSnapshot(DirectorySnapshot snapshot)
         {
-            try
-            {
+            try {
                 snapshot.CreateSnapshot();
                 var snapshots = snapshot.GetDeletedSnapshots(Filters);
                 var messages = snapshots.Select(x => ReadSnapshot(x)).ToArray();
                 _deletedQueue.Produce(_producerTokenSource.Token, messages);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 OnException?.Invoke(this, e);
             }
         }
 
         private FileMessage ReadSnapshot(FileSnapshot snapshot)
         {
-            var fileMessage = new FileMessage
-            {
+            var fileMessage = new FileMessage {
                 Name = snapshot.Name
             };
 
-            try
-            {
+            try {
                 var fileInfo = new FileInfo(snapshot.Name);
-                if (fileInfo.Exists)
-                {
+                if (fileInfo.Exists) {
                     var fileBytes = ExclusiveRead(fileInfo);
                     fileMessage.Content = Encoding.UTF8.GetString(fileBytes);
                     fileMessage.ContentLength = fileBytes.LongLength;
                 }
-            }
-            catch { }
+            } catch { }
 
             return fileMessage;
         }
 
         private static byte[] ExclusiveRead(FileInfo file)
         {
-            using (var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
-            {
+            using (var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None)) {
                 var cache = new MemoryStream();
                 var buffer = new byte[4096];
                 var len = 0;

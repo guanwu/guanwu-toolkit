@@ -21,8 +21,7 @@ namespace Guanwu.Toolkit
         public static void TypeHasDefaultConstructor(Type type, string argumentName)
         {
             if (type.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .All(ctor => ctor.GetParameters().Length != 0))
-            {
+                .All(ctor => ctor.GetParameters().Length != 0)) {
                 throw new ArgumentException(argumentName);
             }
         }
@@ -35,8 +34,7 @@ namespace Guanwu.Toolkit
         /// <exception cref="ArgumentNullException" />
         public static void AgainstNull(string argumentName, object value)
         {
-            if (value == null)
-            {
+            if (value == null) {
                 throw new ArgumentNullException(argumentName);
             }
         }
@@ -49,8 +47,7 @@ namespace Guanwu.Toolkit
         /// <exception cref="ArgumentNullException" />
         public static void AgainstNullAndEmpty(string argumentName, string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
+            if (string.IsNullOrWhiteSpace(value)) {
                 throw new ArgumentNullException(argumentName);
             }
         }
@@ -64,12 +61,10 @@ namespace Guanwu.Toolkit
         /// <exception cref="ArgumentOutOfRangeException" />
         public static void AgainstNullAndEmpty(string argumentName, ICollection value)
         {
-            if (value == null)
-            {
+            if (value == null) {
                 throw new ArgumentNullException(argumentName);
             }
-            if (value.Count == 0)
-            {
+            if (value.Count == 0) {
                 throw new ArgumentOutOfRangeException(argumentName);
             }
         }
@@ -82,8 +77,7 @@ namespace Guanwu.Toolkit
         /// <exception cref="ArgumentOutOfRangeException" />
         public static void AgainstNegativeAndZero(string argumentName, int value)
         {
-            if (value <= 0)
-            {
+            if (value <= 0) {
                 throw new ArgumentOutOfRangeException(argumentName);
             }
         }
@@ -96,8 +90,7 @@ namespace Guanwu.Toolkit
         /// <exception cref="ArgumentOutOfRangeException" />
         public static void AgainstNegative(string argumentName, int value)
         {
-            if (value < 0)
-            {
+            if (value < 0) {
                 throw new ArgumentOutOfRangeException(argumentName);
             }
         }
@@ -110,8 +103,7 @@ namespace Guanwu.Toolkit
         /// <exception cref="ArgumentOutOfRangeException" />
         public static void AgainstNegativeAndZero(string argumentName, TimeSpan value)
         {
-            if (value <= TimeSpan.Zero)
-            {
+            if (value <= TimeSpan.Zero) {
                 throw new ArgumentOutOfRangeException(argumentName);
             }
         }
@@ -124,8 +116,7 @@ namespace Guanwu.Toolkit
         /// <exception cref="ArgumentOutOfRangeException" />
         public static void AgainstNegative(string argumentName, TimeSpan value)
         {
-            if (value < TimeSpan.Zero)
-            {
+            if (value < TimeSpan.Zero) {
                 throw new ArgumentOutOfRangeException(argumentName);
             }
         }

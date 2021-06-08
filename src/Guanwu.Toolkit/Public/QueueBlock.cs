@@ -89,19 +89,16 @@ namespace Guanwu.Toolkit
                     if (_collection.TryAdd(item, 10, ct)) {
                         Interlocked.Increment(ref index);
                         OnAdded?.Invoke(this, item);
-                    } 
-                    else {
+                    } else {
                         OnAddBlocked?.Invoke(this, item);
                     }
-                } 
-                catch (OperationCanceledException) {
+                } catch (OperationCanceledException) {
                     OnAddingCanceled?.Invoke(this, item);
                     break;
-                } 
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     OnException?.Invoke(this, ex);
                 }
-            } 
+            }
             while (index < items.Length);
         }
 
@@ -112,16 +109,13 @@ namespace Guanwu.Toolkit
                 try {
                     if (_collection.TryTake(out item, 10, ct)) {
                         OnTaked?.Invoke(this, item);
-                    } 
-                    else {
+                    } else {
                         OnTakeBlocked?.Invoke(this, item);
                     }
-                } 
-                catch (OperationCanceledException) {
+                } catch (OperationCanceledException) {
                     OnTakingCanceled?.Invoke(this, item);
                     break;
-                } 
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     OnException?.Invoke(this, ex);
                 }
             }

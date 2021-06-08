@@ -2,11 +2,32 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Guanwu.Toolkit.Cryptography;
 
 namespace Guanwu.Toolkit.Extensions.Cryptography
 {
     public static class CryptographyExtension
     {
+        public static string ToSm4(this string input, string key, string iv, int codepage = 65001)
+        {
+            byte[] hash = ToSm4Hash(input, key, iv, codepage);
+            return Convert.ToBase64String(hash);
+        }
+
+        public static byte[] ToSm4Hash(this string input, string key, string iv, int codepage = 65001)
+        {
+            Encoding encoding = Encoding.GetEncoding(codepage);
+            return ToSm4Hash(encoding.GetBytes(input), encoding.GetBytes(key), encoding.GetBytes(iv));
+        }
+
+        private static byte[] ToSm4Hash(this byte[] input, byte[] key, byte[] iv)
+        {
+            var sm4 = new Sm4();
+            var ctx = new Sm4Context { IsPadding = true };
+            sm4.SetKeyEnc(ctx, key);
+            return sm4.EncryptCBC(ctx, iv, input);
+        }
+
         public static string ToRsa(this string input, string keyInfoXml, int codepage = 65001, bool fOAEP = false)
         {
             byte[] hash = input.ToRsaHash(keyInfoXml, codepage, fOAEP);
@@ -21,17 +42,14 @@ namespace Guanwu.Toolkit.Extensions.Cryptography
 
         private static byte[] ToRsaHash(this byte[] input, string keyInfoXml, bool fOAEP = false)
         {
-            using (var rsa = new RSACryptoServiceProvider())
-            {
+            using (var rsa = new RSACryptoServiceProvider()) {
                 rsa.FromXmlString(keyInfoXml);
                 var blockSize = rsa.KeySize / 8 - 11;
                 var block = new byte[blockSize];
                 using (var inputStream = new MemoryStream(input))
-                using (var outputStream = new MemoryStream())
-                {
+                using (var outputStream = new MemoryStream()) {
                     int bufferSize;
-                    while ((bufferSize = inputStream.Read(block, 0, blockSize)) > 0)
-                    {
+                    while ((bufferSize = inputStream.Read(block, 0, blockSize)) > 0) {
                         var buffer = new byte[bufferSize];
                         Array.Copy(block, 0, buffer, 0, bufferSize);
                         var output = rsa.Encrypt(buffer, fOAEP);

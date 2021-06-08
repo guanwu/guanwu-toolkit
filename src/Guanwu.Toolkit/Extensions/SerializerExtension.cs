@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 using Guanwu.Toolkit.Serialization;
 
 namespace Guanwu.Toolkit.Extensions.Serializer
@@ -10,7 +11,7 @@ namespace Guanwu.Toolkit.Extensions.Serializer
             return JsonSerializer.Serialize(input);
         }
 
-        public static dynamic FromJson(this string input)
+        public static object FromJson(this string input)
         {
             var serializerOptions = new JsonSerializerOptions {
                 Converters = { new JsonDynamicConverter() }
@@ -18,10 +19,35 @@ namespace Guanwu.Toolkit.Extensions.Serializer
             return JsonSerializer.Deserialize<dynamic>(input, serializerOptions);
         }
 
-        public static dynamic ToDynamic(this object input)
+        public static T FromJson<T>(this string input) where T : class
         {
-            return FromJson(ToJson(input));
+            var serializerOptions = new JsonSerializerOptions {
+                Converters = { new JsonDynamicConverter() }
+            };
+            return JsonSerializer.Deserialize<T>(input, serializerOptions);
+        }
+
+        public static object Select(this object input, string path)
+        {
+            var inputs = input as IDictionary<string, object>;
+            return (input != null && inputs.ContainsKey(path))
+                ? inputs[path] : default(object);
+        }
+
+        public static T Value<T>(this object input) where T : class
+        {
+            return input as T;
+        }
+
+        public static IEnumerable<T> Values<T>(this object inputs) where T : class
+        {
+            foreach (var input in (dynamic)inputs)
+                yield return input as T;
+        }
+
+        public static T ToObject<T>(this object input) where T : class
+        {
+            return FromJson<T>(ToJson(input));
         }
     }
-
 }

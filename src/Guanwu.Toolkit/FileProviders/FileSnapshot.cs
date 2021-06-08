@@ -10,15 +10,13 @@ namespace Guanwu.Toolkit.FileProviders
 
         public FileSnapshot(string name)
         {
-            try
-            {
+            try {
                 var fileInfo = new FileInfo(name);
                 if (fileInfo.Exists) {
                     this.Name = fileInfo.FullName;
                     this.LastModified = fileInfo.LastWriteTimeUtc.ToUnixTime();
                 }
-            }
-            catch { }
+            } catch { }
         }
 
         public bool Equals(FileSnapshot other)

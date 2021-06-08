@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Guanwu.Toolkit.FileProviders
 {
-    internal class DirectorySnapshot 
+    internal class DirectorySnapshot
     {
         private readonly string _directory;
         private readonly string _pattern;
@@ -21,7 +21,8 @@ namespace Guanwu.Toolkit.FileProviders
         public DirectorySnapshot(string directory, SearchOption searchOption)
             : this(directory, "*", searchOption) { }
 
-        public DirectorySnapshot(string directory, string searchPattern, SearchOption searchOption) {
+        public DirectorySnapshot(string directory, string searchPattern, SearchOption searchOption)
+        {
             _directory = directory;
             _pattern = searchPattern;
             _option = searchOption;
@@ -79,6 +80,6 @@ namespace Guanwu.Toolkit.FileProviders
             }
             return false;
         }
-        
+
     }
 }
